@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+  <title>Contact Form</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Contact Form</h1>
+    <form id="contactForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" class="form-control" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="g-recaptcha" data-sitekey="6LdpvDEUAAAAAMy8x0y8PS99j4BavfO2oBdVTQGZ"></div>
+      </div>
+      <input type="submit" value="Submit" class="btn btn-primary" />
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const name = document.querySelector('#name').value;
+      const email = document.querySelector('#email').value;
+      const message = document.querySelector('#message').value;
+      const captcha = document.querySelector('.g-recaptcha-response').value;
+
+      return fetch('/contact', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({ name, email, message, captcha })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          alert(data.msg);
+          if (data.success) return location.reload();
+        });
+    });
+  </script>
+</body>
+
+</html>
